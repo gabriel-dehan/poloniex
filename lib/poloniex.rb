@@ -1,4 +1,5 @@
 require "poloniex/version"
+require "json"
 require 'rest-client'
 require 'openssl'
 require 'addressable/uri'
@@ -128,13 +129,13 @@ module Poloniex
 
     def get( command, params = {} )
       params[:command] = command
-      resource[ 'public' ].get params: params
+      JSON.parse(resource[ 'public' ].get params: params)
     end
 
     def post( command, params = {} )
       params[:command] = command
       params[:nonce]   = (Time.now.to_f * 10000000).to_i
-      resource[ 'tradingApi' ].post params, { Key: self.key , Sign: create_sign( params ) }
+      JSON.parse(resource[ 'tradingApi' ].post params, { Key: self.key , Sign: create_sign( params ) })
     end
 
     def create_sign( data )
